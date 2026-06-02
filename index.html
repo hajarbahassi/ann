@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Mercedes-Benz Maroc - Auto Nejma Support</title>
+
+<style>
+
+/* TOP BAR GLOBAL */
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #0b0f1a;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    z-index: 999;
+}
+
+/* BODY */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding-top: 40px;
+}
+
+/* CONTAINER */
+.chat-container {
+    width: 430px;
+    height: 700px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* HEADER CHAT */
+.header {
+    background: linear-gradient(90deg, #0b0f1a, #111827);
+    color: white;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header img {
+    width: 32px;
+    height: 32px;
+}
+
+.header-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.header-title strong {
+    font-size: 14px;
+}
+
+.header-title span {
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+/* CHAT */
+.chat {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background: #ffffff;
+}
+
+/* MESSAGE */
+.msg {
+    margin: 8px;
+    padding: 10px;
+    border-radius: 12px;
+    max-width: 80%;
+    white-space: pre-line;
+}
+
+.user {
+    background: #2563eb;
+    color: white;
+    margin-left: auto;
+}
+
+.bot {
+    background: #eef0f4;
+    color: #111;
+    margin-right: auto;
+    border-left: 3px solid #111827;
+}
+
+/* SUGGESTIONS */
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background: #fafafa;
+}
+
+.suggestion {
+    background: #e0e7ff;
+    color: #1e3a8a;
+    padding: 8px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* INPUT */
+.input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+button {
+    margin-left: 10px;
+    padding: 10px 15px;
+    border: none;
+    background: #111827;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1f2937;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- 🔥 EN-TÊTE GLOBAL -->
+<div class="topbar">
+Auto Nejma • Mercedes-Benz Rabat • Service Relation Client
+</div>
+
+<div class="chat-container">
+
+<!-- HEADER CHAT -->
+<div class="header">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/90/Mercedes-Logo.svg">
+    <div class="header-title">
+        <strong>Mercedes-Benz Maroc</strong>
+        <span>Auto Nejma - Service Relation Client</span>
+    </div>
+</div>
+
+<!-- CHAT -->
+<div class="chat" id="chat"></div>
+
+<!-- SUGGESTIONS -->
+<div class="suggestions">
+<div class="suggestion" onclick="ask('Retard livraison véhicule')">🚚 Livraison</div>
+<div class="suggestion" onclick="ask('Problème moteur grave')">⚠️ Moteur</div>
+<div class="suggestion" onclick="ask('Problème freinage urgent')">🛑 Freins</div>
+<div class="suggestion" onclick="ask('Climatisation ne fonctionne pas')">❄️ Clim</div>
+<div class="suggestion" onclick="ask('Bruit anormal dans le véhicule')">🔧 Bruit</div>
+<div class="suggestion" onclick="ask('Standard injoignable')">📞 Standard</div>
+<div class="suggestion" onclick="ask('Je veux un rendez-vous atelier')">📅 Rendez-vous</div>
+</div>
+
+<!-- INPUT -->
+<div class="input-area">
+<input type="text" id="input" placeholder="Décrivez votre problème...">
+<button onclick="send()">Envoyer</button>
+</div>
+
+</div>
+
+<script>
+
+// =====================
+// TECHNICIENS
+// =====================
+function getExpert(msg) {
+
+    if (msg.includes("moteur")) {
+        return "👨‍🔧 Ingénieur Mercedes-Benz : Diagnostic Motopropulseur";
+    }
+
+    if (msg.includes("frein")) {
+        return "👨‍🔧 Spécialiste Mercedes-Benz : Systèmes de Sécurité ABS";
+    }
+
+    if (msg.includes("clim")) {
+        return "👨‍🔧 Expert Mercedes-Benz : Climatisation & Thermique";
+    }
+
+    if (msg.includes("bruit")) {
+        return "👨‍🔧 Analyste Mercedes-Benz : NVH (Bruits & Vibrations)";
+    }
+
+    if (msg.includes("livraison")) {
+        return "📦 Agent Auto Nejma : Logistique Véhicules Premium";
+    }
+
+    if (msg.includes("standard")) {
+        return "📞 Centre Mercedes-Benz : Relation Client";
+    }
+
+    return "👨‍💼 Conseiller Mercedes-Benz Maroc";
+}
+
+// =====================
+// CHATBOT
+// =====================
+function botResponse(msg) {
+
+    msg = msg.toLowerCase();
+    let expert = getExpert(msg);
+
+    if (msg.includes("livraison")) {
+        return "📦 Livraison véhicule\n\nVotre dossier est en cours de traitement prioritaire.\n\n" +
+        expert + "\n\n📅 Rendez-vous possible pour suivi.";
+    }
+
+    if (msg.includes("moteur")) {
+        return "⚠️ Problème moteur\n\nInspection immédiate recommandée.\n\n" +
+        expert + "\n\n📅 Rendez-vous atelier conseillé.";
+    }
+
+    if (msg.includes("frein")) {
+        return "🛑 Sécurité critique\n\nIntervention urgente requise.\n\n" +
+        expert;
+    }
+
+    if (msg.includes("clim")) {
+        return "❄️ Climatisation\n\nDiagnostic nécessaire.\n\n" +
+        expert;
+    }
+
+    if (msg.includes("bruit")) {
+        return "🔧 Analyse bruit véhicule\n\nContrôle NVH requis.\n\n" +
+        expert;
+    }
+
+    if (msg.includes("standard")) {
+        return "📞 Standard occupé\n\nUn rappel sera effectué.\n\n" +
+        expert;
+    }
+
+    if (msg.includes("rendez")) {
+        return "📅 Rendez-vous atelier\n\nMerci de préciser votre disponibilité.\n\n" +
+        expert;
+    }
+
+    return "Mercedes-Benz Maroc\n\nVotre demande est transmise à un conseiller.\n\n" + expert;
+}
+
+// =====================
+// UI FUNCTIONS
+// =====================
+function addMessage(text, type) {
+    const div = document.createElement("div");
+    div.className = "msg " + type;
+    div.innerText = text;
+
+    document.getElementById("chat").appendChild(div);
+    document.getElementById("chat").scrollTop = 9999;
+}
+
+function send() {
+    const input = document.getElementById("input");
+    const text = input.value;
+    if (!text) return;
+
+    addMessage(text, "user");
+
+    setTimeout(() => {
+        addMessage(botResponse(text), "bot");
+    }, 500);
+
+    input.value = "";
+}
+
+function ask(text) {
+    addMessage(text, "user");
+
+    setTimeout(() => {
+        addMessage(botResponse(text), "bot");
+    }, 500);
+}
+
+// START
+window.onload = () => {
+    addMessage("Mercedes-Benz Maroc 👋\nService Relation Client Auto Nejma\nComment pouvons-nous vous aider ?", "bot");
+};
+
+</script>
+
+</body>
+</html>
